@@ -286,6 +286,9 @@
       <a id="nav-sentiment">💬 Sentiment</a>
       <a id="nav-pathfinding">🧭 A*</a>
       <a id="nav-tictactoe">❌⭕ Tic Tac Toe</a>
+      <a id="nav-calculator">🧮 Calculator</a>
+      <a id="nav-todo">📝 To-Do List</a>
+      <a id="nav-weather">☀️ Weather</a>
     </div>
   </nav>
 
@@ -318,7 +321,7 @@
     <div id="tic-tac-toe-board" style="display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 10px; justify-content: center; margin-top: 20px;">
       <button class="ttt-cell" data-cell-index="0" style="width: 100px; height: 100px; font-size: 48px; cursor: pointer;"></button>
       <button class="ttt-cell" data-cell-index="1" style="width: 100px; height: 100px; font-size: 48px; cursor: pointer;"></button>
-      <button class="ttt-cell" data-cell-index="2" style="width: 100px; height: 100px; font-size: 48px; cursor: pointer;"></button>
+      <button class="ttt-cell" data-cell-index="2" style="width: 100px; height: 100px; cursor: pointer;"></button>
       <button class="ttt-cell" data-cell-index="3" style="width: 100px; height: 100px; font-size: 48px; cursor: pointer;"></button>
       <button class="ttt-cell" data-cell-index="4" style="width: 100px; height: 100px; font-size: 48px; cursor: pointer;"></button>
       <button class="ttt-cell" data-cell-index="5" style="width: 100px; height: 100px; font-size: 48px; cursor: pointer;"></button>
@@ -332,19 +335,67 @@
     <div id="ttt-status" style="text-align: center; margin-top: 15px; font-size: 18px; color: #ffd000;"></div>
   </div>
 
+  <div class="container" id="calculator">
+    <h1>🧮 Calculator</h1>
+    <input type="text" id="calc-display" readonly style="width: 100%; font-size: 24px; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: none; background-color: rgba(255,255,255,0.1); color: inherit; text-align: right;">
+    <div id="calc-buttons" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+      <button onclick="calcPress('7')">7</button>
+      <button onclick="calcPress('8')">8</button>
+      <button onclick="calcPress('9')">9</button>
+      <button onclick="calcPress('/')">÷</button>
+      <button onclick="calcPress('4')">4</button>
+      <button onclick="calcPress('5')">5</button>
+      <button onclick="calcPress('6')">6</button>
+      <button onclick="calcPress('*')">×</button>
+      <button onclick="calcPress('1')">1</button>
+      <button onclick="calcPress('2')">2</button>
+      <button onclick="calcPress('3')">3</button>
+      <button onclick="calcPress('-')">−</button>
+      <button onclick="calcPress('0')">0</button>
+      <button onclick="calcPress('.')">.</button>
+      <button onclick="calculateResult()">=</button>
+      <button onclick="calcPress('+')">+</button>
+      <button onclick="clearCalc()" style="grid-column: span 4; background-color: #f44336; color: white;">Clear</button>
+    </div>
+  </div>
+
+  <div class="container" id="todo">
+    <h1>📝 To-Do List</h1>
+    <input type="text" id="todo-input" placeholder="Add a new task..." style="width: 100%; padding: 10px; border-radius: 8px; border: none; margin-bottom: 10px; background-color: rgba(255,255,255,0.1); color: inherit;">
+    <button onclick="addTodo()" style="width: 100%; padding: 10px; border: none; border-radius: 8px; background-color: #ffd000; font-weight: bold; margin-bottom: 10px; cursor: pointer;">Add Task</button>
+    <ul id="todo-list" style="list-style: none; padding-left: 0;"></ul>
+  </div>
+
+  <div class="container" id="weather">
+    <h1>☀️ Weather Widget</h1>
+    <input type="text" id="weather-city" placeholder="Enter city name..." style="width: 100%; padding: 10px; border-radius: 8px; border: none; margin-bottom: 10px; background-color: rgba(255,255,255,0.1); color: inherit;">
+    <button onclick="getWeather()" style="width: 100%; padding: 10px; border: none; border-radius: 8px; background-color: #00e0ff; font-weight: bold; margin-bottom: 10px; cursor: pointer; color: black;">Get Weather</button>
+    <div id="weather-result" style="text-align: center;"></div>
+  </div>
+
   <script>
     // Navbar click handlers to toggle tool visibility
     const sentimentContainer = document.getElementById('sentiment');
     const pathfindingContainer = document.getElementById('pathfinding');
     const tictactoeContainer = document.getElementById('tictactoe');
+    const calculatorContainer = document.getElementById('calculator');
+    const todoContainer = document.getElementById('todo');
+    const weatherContainer = document.getElementById('weather');
+
     const navSentiment = document.getElementById('nav-sentiment');
     const navPathfinding = document.getElementById('nav-pathfinding');
     const navTicTacToe = document.getElementById('nav-tictactoe');
+    const navCalculator = document.getElementById('nav-calculator');
+    const navTodo = document.getElementById('nav-todo');
+    const navWeather = document.getElementById('nav-weather');
 
     function hideAll() {
       sentimentContainer.classList.remove('active');
       pathfindingContainer.classList.remove('active');
       tictactoeContainer.classList.remove('active');
+      calculatorContainer.classList.remove('active');
+      todoContainer.classList.remove('active');
+      weatherContainer.classList.remove('active');
     }
 
     navSentiment.addEventListener('click', () => {
@@ -360,6 +411,21 @@
     navTicTacToe.addEventListener('click', () => {
       hideAll();
       tictactoeContainer.classList.add('active');
+    });
+
+    navCalculator.addEventListener('click', () => {
+      hideAll();
+      calculatorContainer.classList.add('active');
+    });
+
+    navTodo.addEventListener('click', () => {
+      hideAll();
+      todoContainer.classList.add('active');
+    });
+
+    navWeather.addEventListener('click', () => {
+      hideAll();
+      weatherContainer.classList.add('active');
     });
 
     // Sentiment Analysis Tool JS
@@ -656,6 +722,85 @@
 
     tttCells.forEach(cell => cell.addEventListener('click', handleTttCellClick));
     tttReset.addEventListener('click', resetTttGame);
+
+    // Calculator JS
+    const calcDisplay = document.getElementById('calc-display');
+    let calcExpression = '';
+
+    function calcPress(value) {
+      calcExpression += value;
+      calcDisplay.value = calcExpression;
+    }
+
+    function calculateResult() {
+      try {
+        calcExpression = eval(calcExpression).toString();
+        calcDisplay.value = calcExpression;
+      } catch (e) {
+        calcDisplay.value = 'Error';
+        calcExpression = '';
+      }
+    }
+
+    function clearCalc() {
+      calcExpression = '';
+      calcDisplay.value = '';
+    }
+
+    // To-Do List JS
+    const todoInput = document.getElementById('todo-input');
+    const todoList = document.getElementById('todo-list');
+
+    function addTodo() {
+      const task = todoInput.value.trim();
+      if (!task) return;
+      const li = document.createElement('li');
+      li.textContent = task;
+      li.style.cursor = 'pointer';
+      li.onclick = () => {
+        li.style.textDecoration = li.style.textDecoration === 'line-through' ? 'none' : 'line-through';
+      };
+      todoList.appendChild(li);
+      todoInput.value = '';
+    }
+
+    // Weather Widget JS
+    const weatherCity = document.getElementById('weather-city');
+    const weatherResult = document.getElementById('weather-result');
+
+    function getWeather() {
+      const city = weatherCity.value.trim();
+      if (!city) {
+        alert('Please enter a city name.');
+        return;
+      }
+      weatherResult.textContent = 'Loading...';
+
+      // Use a free weather API like OpenWeatherMap (requires API key)
+      // For demonstration, we will use a dummy response
+
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=6c3c3f9f1e1a50d84e6f4927c6c4f470&units=metric`)
+        .then(response => {
+          if (!response.ok) throw new Error('City not found');
+          return response.json();
+        })
+        .then(data => {
+          weatherResult.innerHTML = `
+            <h3>${data.name}, ${data.sys.country}</h3>
+            <p>Temperature: ${data.main.temp} °C</p>
+            <p>Weather: ${data.weather[0].description}</p>
+            <p>Humidity: ${data.main.humidity}%</p>
+            <p>Wind Speed: ${data.wind.speed} m/s</p>
+          `;
+        })
+        .catch(error => {
+          weatherResult.textContent = 'Error fetching weather data. Please check the city name.';
+          console.error(error);
+        });
+    }
+  </script>
+</body>
+</html>
 </script>
 </body>
 </html>
