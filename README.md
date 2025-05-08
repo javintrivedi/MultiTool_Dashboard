@@ -63,6 +63,7 @@
 <ul>
   <li>Improve mobile responsiveness</li>
   <li>Add animations to pathfinding steps</li>
+  <li>Fix the weather feature</li>
 </ul>
 
 <hr>
